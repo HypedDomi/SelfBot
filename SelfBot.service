@@ -1,0 +1,11 @@
+[Unit]
+Description=Discord Selfbot
+
+[Service]
+User=admin
+Group=admin
+WorkingDirectory=/home/admin/DiscordBots/SelfBot/
+ExecStart=python3.9 /home/admin/DiscordBots/SelfBot/bot.py
+
+[Install]
+WantedBy=multi-user.target

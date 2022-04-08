@@ -1,0 +1,6 @@
+aiohttp
+emoji
+requests
+psutil
+python-dotenv
+pytz
