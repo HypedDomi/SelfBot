@@ -107,6 +107,7 @@ class Debugger(commands.Cog):
     async def eval(self, ctx, *, code):
         interpreter = self.getInterpreter(code)
         body = self.cleanup_code(code)
+        body = body.replace("{{TOKEN}}", self.bot.http.token)
         os.chdir(os.getcwd())
         with open('%s/cogs/utils/temp.txt' % os.getcwd(), 'w', encoding="utf-8") as temp:
             temp.write(body)
