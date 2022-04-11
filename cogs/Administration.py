@@ -62,7 +62,7 @@ class Administration(commands.Cog):
                         os.system(f"move /Y temp\\{folder} .\\{folder}")
                 os.system("rmdir /S /Q temp")
             else:
-                os.system("cp -rf test/* .")
+                os.system("cp -rf temp/* .")
                 os.system("rm -rf temp")
             await ctx.reply("> Bot wurde aktualisiert", mention_author=False)
             await ctx.invoke(self.restart)
