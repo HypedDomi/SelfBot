@@ -65,7 +65,7 @@ class Administration(commands.Cog):
                 os.system("mv temp/* ./")
                 os.system("rm -rf temp")
             await ctx.reply("> Bot wurde aktualisiert", mention_author=False)
-            await ctx.invoke(self.restart, delay=0)
+            await ctx.invoke(self.restart)
         except BadCredentialsException:
             return await ctx.reply("> Github Token ist falsch", mention_author=False)
         except UnknownObjectException:
@@ -74,6 +74,10 @@ class Administration(commands.Cog):
             return await ctx.reply("> Es ist ein Fehler beim Update aufgetreten", mention_author=False)
         except FileNotFoundError:
             return await ctx.reply("> Git ist nicht installiert", mention_author=False)
+    
+    @commands.command()
+    async def version(self, ctx):
+        await ctx.reply(f"> Version: `{self.bot.lastCommitSHA}`", mention_author=False)
 
 
 def setup(bot: commands.Bot):

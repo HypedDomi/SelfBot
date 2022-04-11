@@ -24,7 +24,7 @@ try:
     with open("lastCommitSHA", "r") as f:
         bot.lastCommitSHA = f.read()
 except FileNotFoundError:
-    bot.lastCommitSHA = ""
+    bot.lastCommitSHA = "Unknown"
 bot.deleted = {}
 bot.edited = {}
 
