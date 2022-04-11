@@ -1,6 +1,9 @@
 import asyncio
 import os
 import sys
+from git import GitCommandError
+from git.repo.base import Repo
+from github import BadCredentialsException, Github, UnknownObjectException
 from typing import Union
 from discord.ext import commands
 
@@ -34,7 +37,43 @@ class Administration(commands.Cog):
             os.startfile(restart)
         else:
             os.popen("sudo -S %s" % ("service SelfBot restart"),
-                     "w").write(self.bot.PASSWORD)
+                     "w").write(self.bot.password)
+
+    @commands.command()
+    async def update(self, ctx):
+        try:
+            git = Github(self.bot.githubToken)
+            repo = git.get_repo("HypedDomi/SelfBot")
+            latest_commit = repo.get_commits().reversed[0]
+            if latest_commit.sha == self.bot.lastCommitSHA:
+                return await ctx.reply("> Du bist bereits auf der neuesten Version", mention_author=False)
+            url = f"https://{self.bot.githubToken}:x-oauth-basic@github.com/HypedDomi/SelfBot"
+            if os.path.exists("temp"):
+                os.rmdir("temp")
+            os.mkdir("temp")
+            Repo.clone_from(url, "temp")
+            self.bot.lastCommitSHA = latest_commit.sha
+            with open("lastCommitSHA", "w") as f:
+                f.write(self.bot.lastCommitSHA)
+            if os.name == "nt":
+                os.system("move /Y temp\\* .\\")
+                for folder in os.listdir("temp"):
+                    if os.path.isdir(os.path.join("temp", folder)):
+                        os.system(f"move /Y temp\\{folder} .\\{folder}")
+                os.system("rmdir /S /Q temp")
+            else:
+                os.system("mv temp/* ./")
+                os.system("rm -rf temp")
+            await ctx.reply("> Bot wurde aktualisiert", mention_author=False)
+            await ctx.invoke(self.restart, delay=0)
+        except BadCredentialsException:
+            return await ctx.reply("> Github Token ist falsch", mention_author=False)
+        except UnknownObjectException:
+            return await ctx.reply("> Du hast keinen Zugriff auf das Repository", mention_author=False)
+        except GitCommandError:
+            return await ctx.reply("> Es ist ein Fehler beim Update aufgetreten", mention_author=False)
+        except FileNotFoundError:
+            return await ctx.reply("> Git ist nicht installiert", mention_author=False)
 
 
 def setup(bot: commands.Bot):

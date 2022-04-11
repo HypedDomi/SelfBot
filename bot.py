@@ -9,7 +9,6 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 PREFIX = os.getenv("PREFIX") or "."
 STATUS = os.getenv("STATUS") or "online"
-PASSWORD = os.getenv("PASSWORD") or ""
 
 
 async def getPrefix(bot, msg):
@@ -20,6 +19,12 @@ bot = commands.Bot(command_prefix=getPrefix, self_bot=True,
 bot.startTime = time.time()
 bot.status = getattr(discord.Status, STATUS)
 bot.password = os.getenv("PASSWORD") or ""
+bot.githubToken = os.getenv("GITHUB_TOKEN") or ""
+try:
+    with open("lastCommitSHA", "r") as f:
+        bot.lastCommitSHA = f.read()
+except FileNotFoundError:
+    bot.lastCommitSHA = ""
 bot.deleted = {}
 bot.edited = {}
 

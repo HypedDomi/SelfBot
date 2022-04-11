@@ -1,6 +1,8 @@
 aiohttp
 emoji
+gitpython
 requests
 psutil
+PyGithub
 python-dotenv
 pytz
