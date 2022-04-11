@@ -44,7 +44,7 @@ class Administration(commands.Cog):
         try:
             git = Github(self.bot.githubToken)
             repo = git.get_repo("HypedDomi/SelfBot")
-            latest_commit = repo.get_commits().reversed[0]
+            latest_commit = repo.get_commits()[0]
             if latest_commit.sha == self.bot.lastCommitSHA:
                 return await ctx.reply("> Du bist bereits auf der neuesten Version", mention_author=False)
             url = f"https://{self.bot.githubToken}:x-oauth-basic@github.com/HypedDomi/SelfBot"
