@@ -74,10 +74,17 @@ class Administration(commands.Cog):
             return await ctx.reply("> Es ist ein Fehler beim Update aufgetreten", mention_author=False)
         except FileNotFoundError:
             return await ctx.reply("> Git ist nicht installiert", mention_author=False)
-    
+
     @commands.command()
     async def version(self, ctx):
         await ctx.reply(f"> Version: `{self.bot.lastCommitSHA}`", mention_author=False)
+
+    @commands.command()
+    async def status(self, ctx, status: str):
+        st = getattr(discord.Status, status.lower())
+        if st is None:
+            return await ctx.reply(f"> `{status}` existiert nicht", mention_author=False)
+        await self.bot.change_presence(status=st, afk=True)
 
 
 def setup(bot: commands.Bot):
