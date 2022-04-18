@@ -40,7 +40,7 @@ class Miscellaneous(commands.Cog):
                 else:
                     return await ctx.message.reply("> Es gibt keine kürzlich editierten Nachrichten", mention_author=False)
             msg = f"**{message.author}**\n> {message.content}"
-            await ctx.message.reply(msg, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
+            await ctx.message.reply(msg.replace("\n", "\n> "), allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
         else:
             try:
                 message = self.bot.deleted[channel.id]
@@ -58,7 +58,7 @@ class Miscellaneous(commands.Cog):
             for attachment in message.attachments:
                 async with aiohttp.ClientSession().get(attachment.url) as resp:
                     files.append(discord.File(io.BytesIO(await resp.read()), filename=attachment.filename))
-            await ctx.message.reply(msg, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False), files=files)
+            await ctx.message.reply(msg.replace("\n", "\n> "), allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False), files=files)
 
     @commands.command()
     async def ping(self, ctx):
