@@ -22,7 +22,7 @@ Setting up
     TOKEN = <BOT TOKEN>
     PREFIX = <COMMAND PREFIX>
     STATUS = <online|idle|dnd|offline>
-    PASSWORD = <User Password>
+    LINUX_PASSWORD = <Linux Password>
     GITHUB_TOKEN = <GitHub Personal Access Token>
     ```
 - Install Node.js[^2]
