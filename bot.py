@@ -18,7 +18,7 @@ bot = commands.Bot(command_prefix=getPrefix, self_bot=True,
                    help_command=None, status=discord.Status.offline, afk=True)
 bot.startTime = time.time()
 bot.status = getattr(discord.Status, STATUS)
-bot.password = os.getenv("PASSWORD") or ""
+bot.password = os.getenv("LINUX_PASSWORD") or ""
 bot.githubToken = os.getenv("GITHUB_TOKEN") or ""
 try:
     with open("lastCommitSHA", "r") as f:
@@ -31,7 +31,6 @@ bot.edited = {}
 for filename in os.listdir("./cogs"):
     if filename.endswith(".py"):
         bot.load_extension(f"cogs.{filename[:-3]}")
-
 
 @bot.event
 async def on_ready():

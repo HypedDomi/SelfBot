@@ -32,33 +32,33 @@ class Miscellaneous(commands.Cog):
                 message = self.bot.edited[channel.id]
             except KeyError:
                 if str(ctx.channel.type) == "text":  # Guild
-                    return await ctx.message.reply(f"Es gibt keine kürzlich editierten Nachrichten in {channel.mention}", mention_author=False)
+                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten in {channel.mention}", mention_author=False)
                 elif str(ctx.channel.type) == "private":  # DM Channel
-                    return await ctx.message.reply(f"Es gibt keine kürzlich editierten Nachrichten bei {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
+                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten bei {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
                 elif str(ctx.channel.type) == "group":  # Group
-                    return await ctx.message.reply(f"Es gibt keine kürzlich editierten Nachrichten in {channel.name or 'der Gruppe'}", mention_author=False)
+                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten in {channel.name or 'der Gruppe'}", mention_author=False)
                 else:
-                    return await ctx.message.reply("Es gibt keine kürzlich editierten Nachrichten", mention_author=False)
-            msg = f"**{message.author}**\n> {message.content}"
-            await ctx.message.reply(msg.replace("\n", "\n"), allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
+                    return await ctx.message.reply("> Es gibt keine kürzlich editierten Nachrichten", mention_author=False)
+            msg = f"**{message.author}**\n {message.content}"
+            await ctx.message.reply(msg.replace("\n", "\n> "), allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
         else:
             try:
                 message = self.bot.deleted[channel.id]
             except KeyError:
                 if str(ctx.channel.type) == "text":  # Guild
-                    return await ctx.message.reply(f"Es gibt keine kürzlich editierten Nachrichten in {channel.mention}", mention_author=False)
+                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten in {channel.mention}", mention_author=False)
                 elif str(ctx.channel.type) == "private":  # DM Channel
-                    return await ctx.message.reply(f"Es gibt keine kürzlich editierten Nachrichten bei {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
+                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten bei {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
                 elif str(ctx.channel.type) == "group":  # Group
-                    return await ctx.message.reply(f"Es gibt keine kürzlich editierten Nachrichten in {channel.name or 'der Gruppe'}", mention_author=False)
+                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten in {channel.name or 'der Gruppe'}", mention_author=False)
                 else:
-                    return await ctx.message.reply("Es gibt keine kürzlich editierten Nachrichten", mention_author=False)
-            msg = f"**{message.author}**\n> {message.content}"
+                    return await ctx.message.reply("> Es gibt keine kürzlich editierten Nachrichten", mention_author=False)
+            msg = f"**{message.author}**\n {message.content}"
             files = []
             for attachment in message.attachments:
                 async with aiohttp.ClientSession().get(attachment.url) as resp:
                     files.append(discord.File(io.BytesIO(await resp.read()), filename=attachment.filename))
-            await ctx.message.reply(msg.replace("\n", "\n"), allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False), files=files)
+            await ctx.message.reply(msg.replace("\n", "\n> "), allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False), files=files)
 
     @commands.command()
     async def ping(self, ctx):
