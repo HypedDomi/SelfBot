@@ -46,13 +46,13 @@ class Miscellaneous(commands.Cog):
                 message = self.bot.deleted[channel.id]
             except KeyError:
                 if str(ctx.channel.type) == "text":  # Guild
-                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten in {channel.mention}", mention_author=False)
+                    return await ctx.message.reply(f"> Es gibt keine kürzlich gelöschten Nachrichten in {channel.mention}", mention_author=False)
                 elif str(ctx.channel.type) == "private":  # DM Channel
-                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten bei {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
+                    return await ctx.message.reply(f"> Es gibt keine kürzlich gelöschten Nachrichten bei {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
                 elif str(ctx.channel.type) == "group":  # Group
-                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten in {channel.name or 'der Gruppe'}", mention_author=False)
+                    return await ctx.message.reply(f"> Es gibt keine kürzlich gelöschten Nachrichten in {channel.name or 'der Gruppe'}", mention_author=False)
                 else:
-                    return await ctx.message.reply("> Es gibt keine kürzlich editierten Nachrichten", mention_author=False)
+                    return await ctx.message.reply("> Es gibt keine kürzlich gelöschten Nachrichten", mention_author=False)
             msg = f"**{message.author}**\n {message.content}"
             files = []
             for attachment in message.attachments:
