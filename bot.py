@@ -10,11 +10,7 @@ TOKEN = os.getenv("TOKEN")
 PREFIX = os.getenv("PREFIX") or "."
 STATUS = os.getenv("STATUS") or "online"
 
-
-async def getPrefix(bot, msg):
-    return PREFIX
-
-bot = commands.Bot(command_prefix=getPrefix, self_bot=True,
+bot = commands.Bot(command_prefix=PREFIX, self_bot=True,
                    help_command=None, status=discord.Status.offline, afk=True)
 bot.startTime = time.time()
 bot.status = getattr(discord.Status, STATUS)
