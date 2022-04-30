@@ -1,3 +1,4 @@
+import asyncio
 import io
 import os
 import platform
@@ -54,11 +55,7 @@ class Miscellaneous(commands.Cog):
                 else:
                     return await ctx.message.reply("> Es gibt keine kürzlich gelöschten Nachrichten", mention_author=False)
             msg = f"**{message.author}**\n {message.content}"
-            files = []
-            for attachment in message.attachments:
-                async with aiohttp.ClientSession().get(attachment.url) as resp:
-                    files.append(discord.File(io.BytesIO(await resp.read()), filename=attachment.filename))
-            await ctx.message.reply(msg.replace("\n", "\n> "), allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False), files=files)
+            await ctx.message.reply(msg.replace("\n", "\n> "), allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False), files=[await x.to_file() for x in message.attachments])
 
     @commands.command()
     async def ping(self, ctx):
@@ -144,6 +141,21 @@ class Miscellaneous(commands.Cog):
                     await ctx.message.reply("> Custom Aktivität gesetzt", mention_author=False)
         else:
             await ctx.message.reply(f"> Aktivität `{game}` existiert nicht", mention_author=False)
+    
+    @commands.command()
+    async def move(self, ctx, channel: discord.TextChannel, amount: int):
+        try:
+            web = await channel.create_webhook(name=self.bot.user)
+        except discord.Forbidden:
+            return await ctx.reply(f"> Du kannst keine Webhooks erstellen in {channel.mention} erstellen")
+        messages = await ctx.channel.history(limit=amount+1).flatten()
+        messages.pop(0)
+        messages.reverse()
+        await ctx.message.reply ("> Moving messages...")
+        for message in messages:
+            await web.send(message.content, files=[await x.to_file() for x in message.attachments], username=message.author.name, avatar_url=message.author.avatar_url)
+            await asyncio.sleep(1)
+        await web.delete()
 
 
 def setup(bot: commands.Bot):
