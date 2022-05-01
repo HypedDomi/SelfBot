@@ -143,7 +143,12 @@ class Miscellaneous(commands.Cog):
             await ctx.message.reply(f"> Aktivität `{game}` existiert nicht", mention_author=False)
     
     @commands.command()
-    async def move(self, ctx, channel: discord.TextChannel, amount: int):
+    async def move(self, ctx, channel: str, amount: int):
+        if channel.startswith("<#"):
+            channel = channel[2:-1]
+        channel = await self.bot.fetch_channel(int(channel))
+        if channel == None:
+            return await ctx.message.reply(f"> Channel nicht gefunden", mention_author=False)
         try:
             web = await channel.create_webhook(name=self.bot.user)
         except discord.Forbidden:
