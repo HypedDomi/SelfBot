@@ -98,6 +98,7 @@ class Miscellaneous(commands.Cog):
                 elif game == "stream":
                     profile = await (await self.bot.fetch_user(self.bot.user.id)).profile()
                     connections = profile.connected_accounts
+                    twitch = None
                     for _, con in enumerate(connections):
                         if con["type"] == "twitch":
                             twitch = f"https://twitch.tv/{con['name']}"
