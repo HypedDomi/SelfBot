@@ -77,7 +77,7 @@ class Administration(commands.Cog):
 
     @commands.command()
     async def version(self, ctx):
-        await ctx.reply(f"> Version: `{self.bot.lastCommitSHA}`", mention_author=False)
+        await ctx.reply(f"> Version: `{self.bot.lastCommitSHA[:7]}`", mention_author=False)
 
     @commands.command()
     async def status(self, ctx, status: str):
