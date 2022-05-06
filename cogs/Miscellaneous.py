@@ -157,10 +157,14 @@ class Miscellaneous(commands.Cog):
         messages = await ctx.channel.history(limit=amount+1).flatten()
         messages.pop(0)
         messages.reverse()
-        await ctx.message.reply ("> Moving messages...")
+        await ctx.message.reply("> Moving messages...")
         for message in messages:
-            await web.send(message.content, files=[await x.to_file() for x in message.attachments], username=message.author.name, avatar_url=message.author.avatar_url)
-            await asyncio.sleep(1)
+            embed = None
+            if message.embeds:
+                if message.embeds[0].type == "rich" and not message.embeds[0].url:
+                    embed = message.embeds[0]
+            await web.send(message.content, embed=embed or None, files=[await x.to_file() for x in message.attachments], username=message.author.name, avatar_url=message.author.avatar_url)
+            await asyncio.sleep(0.75)
         await web.delete()
 
 
