@@ -153,7 +153,7 @@ class Miscellaneous(commands.Cog):
         try:
             web = await channel.create_webhook(name=self.bot.user)
         except discord.Forbidden:
-            return await ctx.reply(f"> Du kannst keine Webhooks erstellen in {channel.mention} erstellen")
+            return await ctx.reply(f"> Du kannst keine Webhooks in {channel.mention} erstellen")
         messages = await ctx.channel.history(limit=amount+1).flatten()
         messages.pop(0)
         messages.reverse()
@@ -163,7 +163,7 @@ class Miscellaneous(commands.Cog):
             if message.embeds:
                 if message.embeds[0].type == "rich" and not message.embeds[0].url:
                     embed = message.embeds[0]
-            await web.send(message.content, embed=embed or None, files=[await x.to_file() for x in message.attachments], username=message.author.name, avatar_url=message.author.avatar_url)
+            await web.send(message.content, embed=embed, files=[await x.to_file() for x in message.attachments], username=message.author.name, avatar_url=message.author.avatar_url)
             await asyncio.sleep(0.75)
         await web.delete()
 
