@@ -1,15 +1,14 @@
 import asyncio
-import io
 import os
 import platform
 import sys
 import time
-import aiohttp
 import psutil
 import discord
 import emoji
 from discord import PartialEmoji
 from discord.ext import commands
+from math import sqrt
 from cogs.utils.helper import Plural
 
 
@@ -166,6 +165,23 @@ class Miscellaneous(commands.Cog):
             await web.send(message.content, embed=embed, files=[await x.to_file() for x in message.attachments], username=message.author.name, avatar_url=message.author.avatar_url)
             await asyncio.sleep(0.75)
         await web.delete()
+    
+    @commands.command()
+    async def calc(self, ctx, *, msg):
+        equation = msg.strip().replace('^', '**').replace('x', '*')
+        try:
+            if '=' in equation:
+                left = eval(equation.split('=')[0], {
+                            "__builtins__": None}, {"sqrt": sqrt})
+                right = eval(equation.split('=')[1], {
+                             "__builtins__": None}, {"sqrt": sqrt})
+                answer = str(left == right)
+            else:
+                answer = str(
+                    eval(equation, {"__builtins__": None}, {"sqrt": sqrt}))
+        except TypeError:
+            await ctx.message.reply("> Ungültige Zeichen gefunden", mention_author=False)
+        await ctx.message.reply(f"> {msg.replace('**', '^').replace('x', '*')} = {answer}", mention_author=False)
 
 
 def setup(bot: commands.Bot):
