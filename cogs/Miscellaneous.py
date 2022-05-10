@@ -54,7 +54,7 @@ class Miscellaneous(commands.Cog):
                 else:
                     return await ctx.message.reply("> Es gibt keine kürzlich gelöschten Nachrichten", mention_author=False)
             msg = f"**{message.author}**\n {message.content}"
-            await ctx.message.reply(msg.replace("\n", "\n> ") if message.content, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False), files=[await x.to_file() for x in message.attachments])
+            await ctx.message.reply(msg.replace("\n", "\n> ") if message.content else msg, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False), files=[await x.to_file() for x in message.attachments])
 
     @commands.command()
     async def ping(self, ctx):
