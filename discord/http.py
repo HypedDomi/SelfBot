@@ -122,7 +122,7 @@ class HTTPClient:
         self.browser_version = await utils._get_browser_version(self.__session)
         self.super_properties = {
             'os': 'Linux',
-            'browser': 'Chrome',
+            'browser': 'Discord Client',
             'device': '',
             'browser_user_agent': self.user_agent,
             'browser_version': self.browser_version,
