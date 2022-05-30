@@ -37,13 +37,8 @@ class Debugger(commands.Cog):
             interpreter = code.split('\n')[0].strip('```')
         return interpreter
 
-    async def interpreter(self, env, code, ctx):
-        body = self.cleanup_code(code)
+    async def py_interpreter(self, env, body, ctx):
         stdout = io.StringIO()
-
-        os.chdir(os.getcwd())
-        with open('%s/cogs/utils/temp.txt' % os.getcwd(), 'w', encoding="utf-8") as temp:
-            temp.write(body)
         to_compile = 'async def func():\n{}'.format(textwrap.indent(body, "  "))
 
         try:
@@ -74,6 +69,7 @@ class Debugger(commands.Cog):
                 self._last_result = ret
                 result = '```\n{}{}\n```'.format(value, ret)
 
+            result = result.replace(self.bot.http.token, "TOKEN")
             if result:
                 if len(str(result)) > 1950:
                     url = await hastebin(str(result).strip("`"))
@@ -81,6 +77,22 @@ class Debugger(commands.Cog):
                     await ctx.send(result)
                 elif not result.replace("```\n\n```", "").strip() == "":
                     await ctx.send(result)
+    
+    async def js_interpreter(self, ctx):
+        try:
+            process = await asyncio.create_subprocess_exec('node', '%s/cogs/utils/temp' % os.getcwd(), stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+        except FileNotFoundError:
+            return await ctx.send("```\nError: Node.js is not installed!\n```")
+        stdout, stderr = await process.communicate()
+        out = stdout.decode('utf-8') or stderr.decode('utf-8')
+        out = out.replace(self.bot.http.token, "TOKEN")
+        if out:
+            if len(str(out)) > 1950:
+                url = await hastebin(str(out).strip("`"))
+                out = 'Large output. Posted to Hastebin: %s' % url
+                await ctx.send(out)
+            elif not out.replace("```\n\n```", "").strip() == "":
+                await ctx.send('```\n{}\n```'.format(out))
 
     @commands.command()
     async def debug(self, ctx):
@@ -109,18 +121,10 @@ class Debugger(commands.Cog):
         body = self.cleanup_code(code)
         body = body.replace("{{TOKEN}}", self.bot.http.token)
         os.chdir(os.getcwd())
-        with open('%s/cogs/utils/temp.txt' % os.getcwd(), 'w', encoding="utf-8") as temp:
+        with open('%s/cogs/utils/temp' % os.getcwd(), 'w', encoding="utf-8") as temp:
             temp.write(body)
         if interpreter == "js" or interpreter == "javascript":
-            try:
-                process = await asyncio.create_subprocess_exec('node', '%s/cogs/utils/temp.txt' % os.getcwd(), stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-            except FileNotFoundError:
-                return await ctx.send("```\nError: Node.js is not installed!\n```")
-            stdout, stderr = await process.communicate()
-            if stderr.decode('utf-8') != "":
-                await ctx.send('```\n{}\n```'.format(stderr.decode('utf-8').strip()))
-            if stdout.decode('utf-8') != "":
-                await ctx.send('```\n{}\n```'.format(stdout.decode('utf-8').strip()))
+            await self.js_interpreter(ctx)
         else:
             env = {
                 'bot': self.bot,
@@ -132,7 +136,7 @@ class Debugger(commands.Cog):
                 '_': self._last_result
             }
             env.update(globals())
-            await self.interpreter(env, body, ctx)
+            await self.py_interpreter(env, body, ctx)
 
     @commands.command()
     async def redirect(self, ctx):
