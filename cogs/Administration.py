@@ -3,7 +3,7 @@ import os
 import sys
 from git import GitCommandError
 from git.repo.base import Repo
-from github import BadCredentialsException, Github, UnknownObjectException
+from github import Github, UnknownObjectException
 from typing import Union
 from discord.ext import commands
 
@@ -42,7 +42,7 @@ class Administration(commands.Cog):
     @commands.command()
     async def update(self, ctx):
         try:
-            git = Github(self.bot.githubToken)
+            git = Github()
             repo = git.get_repo("HypedDomi/SelfBot")
             latest_commit = repo.get_commits()[0]
             if latest_commit.sha == self.bot.lastCommitSHA:
@@ -66,8 +66,6 @@ class Administration(commands.Cog):
                 os.system("rm -rf temp")
             await ctx.reply("> Bot wurde aktualisiert", mention_author=False)
             await ctx.invoke(self.restart)
-        except BadCredentialsException:
-            return await ctx.reply("> Github Token ist falsch", mention_author=False)
         except UnknownObjectException:
             return await ctx.reply("> Du hast keinen Zugriff auf das Repository", mention_author=False)
         except GitCommandError:

@@ -14,7 +14,6 @@ bot = commands.Bot(command_prefix=PREFIX, self_bot=True, help_command=None, stat
 bot.startTime = time.time()
 bot.status = getattr(discord.Status, STATUS)
 bot.password = os.getenv("LINUX_PASSWORD") or ""
-bot.githubToken = os.getenv("GITHUB_TOKEN") or ""
 
 try:
     with open("lastCommitSHA", "r") as f:

@@ -130,7 +130,7 @@ class Moderator(commands.Cog):
         r = requests.patch(url, headers=headers, json=data)
         if r.status_code != 200:
             return await ctx.reply(f"> Es trat ein Fehler auf\n```json\n{r.json()}\n```", mention_author=False)
-        await ctx.reply(f"> {member.mention} wurde für {TimeParser.human_timedelta(datetime.utcnow() - timedelta(seconds=time.seconds))} gesperrt", mention_author=False)
+        await ctx.reply(f"> {member.mention} wurde für {TimeParser.human_timedelta(datetime.utcnow() - timedelta(seconds=time.seconds))} gesperrt", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
 
 
 def setup(bot: commands.Bot):
