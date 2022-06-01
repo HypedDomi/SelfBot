@@ -36,8 +36,7 @@ class Administration(commands.Cog):
         if os.name == "nt":
             os.startfile(restart)
         else:
-            os.popen("sudo -S %s" % ("service SelfBot restart"),
-                     "w").write(self.bot.password)
+            os.popen("sudo -S %s" % ("service SelfBot restart"), "w").write(self.bot.password)
 
     @commands.command()
     async def update(self, ctx):
@@ -47,7 +46,7 @@ class Administration(commands.Cog):
             latest_commit = repo.get_commits()[0]
             if latest_commit.sha == self.bot.lastCommitSHA:
                 return await ctx.reply("> Du bist bereits auf der neuesten Version", mention_author=False)
-            url = f"https://{self.bot.githubToken}:x-oauth-basic@github.com/HypedDomi/SelfBot"
+            url = f"https://github.com/HypedDomi/SelfBot"
             if os.path.exists("temp"):
                 os.rmdir("temp")
             os.mkdir("temp")
