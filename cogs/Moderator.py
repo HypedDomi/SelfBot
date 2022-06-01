@@ -1,7 +1,9 @@
+from datetime import datetime, timedelta
+import requests
 import discord
 from typing import Union
 from discord.ext import commands
-from cogs.utils.helper import Plural, get_banned_user
+from cogs.utils.helper import Plural, TimeParser, get_banned_user
 
 
 class Moderator(commands.Cog):
@@ -89,7 +91,46 @@ class Moderator(commands.Cog):
         if seconds == 0:
             await ctx.reply("> Slowmode wurde deaktiviert", mention_author=False)
         else:
-            await ctx.reply(f"> Der Slowmode wurde auf {seconds} {Plural(Sekunde=seconds)} gesetzt", mention_author=False)
+            await ctx.reply(f"> Der Slowmode wurde auf {Plural(Sekunde=seconds)} gesetzt", mention_author=False)
+    
+    @commands.command()
+    async def clear(self, ctx, amount: Union[int, str]):
+        if not isinstance(amount, int):
+            return await ctx.reply("> Das sieht nicht nach einer Zahl aus", mention_author=False)
+        if amount < 1:
+            return await ctx.reply("> Du musst mindestens eine Nachricht löschen", mention_author=False)
+        if amount > 100:
+            return await ctx.reply("> Du kannst maximal 100 Nachrichten löschen", mention_author=False)
+        try:
+            await ctx.channel.purge(limit=amount+1)
+        except discord.Forbidden:
+            return await ctx.reply("> Keine Berechtigung um Nachrichten zu löschen", mention_author=False)
+        await ctx.send(f"> {Plural(Nachricht=amount)} {Plural(wurde=amount)} gelöscht", delete_after=10)
+    
+    @commands.command()
+    async def timeout(self, ctx, member: discord.Member, time: str, *, reason = ""):
+        try:
+            time = TimeParser(time)
+        except ValueError:
+            return await ctx.reply("> Ungültiges Zeitformat", mention_author=False)
+
+        if member == ctx.author:
+            return await ctx.reply("> Du kannst dich nicht selber timeouten", mention_author=False)
+        if member.top_role.position >= ctx.author.top_role.position:
+            return await ctx.reply("> Du kannst niemanden timeouten der eine höhere Rolle hat als du", mention_author=False)
+        if member.guild_permissions.administrator:
+            return await ctx.reply("> Du kannst niemanden timeouten der Adminrechte hat", mention_author=False)
+        
+        timestamp = datetime.utcnow().timestamp() + time.seconds
+        timestamp = datetime.fromtimestamp(timestamp).isoformat()
+        
+        url = f"https://discord.com/api/v9/guilds/{ctx.guild.id}/members/{member.id}"
+        headers = { "Authorization": self.bot.http.token, "Content-Type": "application/json" }
+        data = { "communication_disabled_until": timestamp }
+        r = requests.patch(url, headers=headers, json=data)
+        if r.status_code != 200:
+            return await ctx.reply(f"> Es trat ein Fehler auf\n```json\n{r.json()}\n```", mention_author=False)
+        await ctx.reply(f"> {member.mention} wurde für {TimeParser.human_timedelta(datetime.utcnow() - timedelta(seconds=time.seconds))} gesperrt", mention_author=False)
 
 
 def setup(bot: commands.Bot):

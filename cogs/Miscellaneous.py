@@ -9,6 +9,7 @@ import emoji
 from discord import PartialEmoji
 from discord.ext import commands
 from math import sqrt
+from typing import Union
 from cogs.utils.helper import Plural
 
 
@@ -22,7 +23,7 @@ class Miscellaneous(commands.Cog):
         hoursUp = int("{:.0f}".format(timeUp / 3600))
         minutesUp = int("{:.0f}".format((timeUp / 60) % 60))
         secondsUp = int("{:.0f}".format(timeUp % 60))
-        await ctx.message.reply(f"> Uptime: {hoursUp} {Plural(Stunde=hoursUp)}, {minutesUp} {Plural(Minute=minutesUp)}, {secondsUp} {Plural(Sekunde=secondsUp)}", mention_author=False)
+        await ctx.message.reply(f"> Uptime: {Plural(Stunde=hoursUp)}, {Plural(Minute=minutesUp)}, {Plural(Sekunde=secondsUp)}", mention_author=False)
 
     @commands.command()
     async def snipe(self, ctx, mode=None):
@@ -58,21 +59,18 @@ class Miscellaneous(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
-        await ctx.message.reply(f"> Pong! {round(self.bot.latency * 1000)}ms", mention_author=False)
+        await ctx.message.reply(f"> Pong! {round(self.bot.latency * 1000, 2)}ms", mention_author=False)
 
     @commands.command()
     async def sysinfo(self, ctx):
         cpu = '{:.2f}%'.format(psutil.cpu_percent())
         mem_usage = psutil.virtual_memory().used / 1024**2
         mem_total = psutil.virtual_memory().total / 1024**2
-        memory = '{:.2f} MiB / {:.2f} MiB ({:.2f}%)'.format(
-            mem_usage, mem_total, psutil.virtual_memory()[2])
+        memory = '{:.2f} MiB / {:.2f} MiB ({:.2f}%)'.format(mem_usage, mem_total, psutil.virtual_memory()[2])
         if os.name == "nt":
-            system = '%s %s (%s)' % (platform.system(),
-                                     platform.version(), sys.platform)
+            system = '%s %s (%s)' % (platform.system(), platform.version(), sys.platform)
         else:
-            syst = '%s %s' % (platform.linux_distribution(full_distribution_name=1)[
-                              0].title(), platform.linux_distribution(full_distribution_name=1)[1])
+            syst = '%s %s' % (platform.linux_distribution(full_distribution_name=1)[0].title(), platform.linux_distribution(full_distribution_name=1)[1])
             system = f"{platform.system()}, {', '.join(map(str, (syst, platform.release())))}"
         response = "**System Info**\n"
         response += f"> CPU: {cpu}\n"
@@ -104,34 +102,28 @@ class Miscellaneous(commands.Cog):
                             break
                     if twitch == None:
                         return await ctx.message.reply("> Du hast keinen Twitch Account mit Discord verknüpft", mention_author=False)
-                    self.bot.activity = discord.Streaming(
-                        name=title, url=twitch)
+                    self.bot.activity = discord.Streaming(name=title, url=twitch)
                     await self.bot.change_presence(status=self.bot.status, activity=discord.Streaming(name=title, url=twitch), afk=True)
                     await ctx.message.reply("> Streaming Aktivität gesetzt", mention_author=False)
                 elif game == "watch":
-                    self.bot.activity = discord.Activity(
-                        type=discord.ActivityType.watching, name=title)
+                    self.bot.activity = discord.Activity(type=discord.ActivityType.watching, name=title)
                     await self.bot.change_presence(status=self.bot.status, activity=discord.Activity(type=discord.ActivityType.watching, name=title), afk=True)
                     await ctx.message.reply("> Watching Aktivität gesetzt", mention_author=False)
                 elif game == "listening":
-                    self.bot.activity = discord.Activity(
-                        type=discord.ActivityType.listening, name=title)
+                    self.bot.activity = discord.Activity(type=discord.ActivityType.listening, name=title)
                     await self.bot.change_presence(status=self.bot.status, activity=discord.Activity(type=discord.ActivityType.listening, name=title), afk=True)
                     await ctx.message.reply("> Listening Aktivität gesetzt", mention_author=False)
                 elif game == "competing":
-                    self.bot.activity = discord.Activity(
-                        type=discord.ActivityType.competing, name=title)
+                    self.bot.activity = discord.Activity(type=discord.ActivityType.competing, name=title)
                     await self.bot.change_presence(status=self.bot.status, activity=discord.Activity(type=discord.ActivityType.competing, name=title), afk=True)
                     await ctx.message.reply("> Competing Aktivität gesetzt", mention_author=False)
                 elif game == "custom":
                     e = title.split()[0]
                     if not emoji.is_emoji(e):
-                        emote = discord.utils.get(
-                            self.bot.emojis, id=int(e.split(":")[2][:-1]))
+                        emote = discord.utils.get(self.bot.emojis, id=int(e.split(":")[2][:-1]))
                         if emote:
                             title = title.replace(e, "")
-                            emote = PartialEmoji(
-                                animated=emote.animated, name=emote.name, id=emote.id)
+                            emote = PartialEmoji(animated=emote.animated, name=emote.name, id=emote.id)
                     else:
                         emote = e
                         title = title.replace(e, "")
@@ -143,7 +135,12 @@ class Miscellaneous(commands.Cog):
             await ctx.message.reply(f"> Aktivität `{game}` existiert nicht", mention_author=False)
     
     @commands.command()
-    async def move(self, ctx, channel: str, amount: int):
+    async def move(self, ctx, channel: str, amount: Union[int, str]):
+        if not isinstance(amount, int):
+            return await ctx.reply(f"> `{amount}` ist keine Zahl", mention_author=False)
+        if amount < 0:
+            return await ctx.reply("> Du kannst keine Nachrichten moven die noch nicht gesendet wurden", mention_author=False)
+        
         if channel.startswith("<#"):
             channel = channel[2:-1]
         channel = await self.bot.fetch_channel(int(channel))
@@ -171,14 +168,11 @@ class Miscellaneous(commands.Cog):
         equation = msg.strip().replace('^', '**').replace('x', '*')
         try:
             if '=' in equation:
-                left = eval(equation.split('=')[0], {
-                            "__builtins__": None}, {"sqrt": sqrt})
-                right = eval(equation.split('=')[1], {
-                             "__builtins__": None}, {"sqrt": sqrt})
+                left = eval(equation.split('=')[0], {"__builtins__": None}, {"sqrt": sqrt})
+                right = eval(equation.split('=')[1], {"__builtins__": None}, {"sqrt": sqrt})
                 answer = str(left == right)
             else:
-                answer = str(
-                    eval(equation, {"__builtins__": None}, {"sqrt": sqrt}))
+                answer = str(eval(equation, {"__builtins__": None}, {"sqrt": sqrt}))
         except TypeError:
             await ctx.message.reply("> Ungültige Zeichen gefunden", mention_author=False)
         await ctx.message.reply(f"> {msg.replace('**', '^').replace('x', '*')} = {answer}", mention_author=False)

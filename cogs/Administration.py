@@ -22,7 +22,7 @@ class Administration(commands.Cog):
             return await ctx.reply("> Delay muss eine Nummer sein", mention_author=False)
         if delay < 0:
             return await ctx.reply("> Delay muss eine positive Nummer sein", mention_author=False)
-        await ctx.reply(f"> Bot startet in {delay} {Plural(Sekunde=delay)} neu", mention_author=False)
+        await ctx.reply(f"> Bot startet in {Plural(Sekunde=delay)} neu", mention_author=False)
         if os.name == "nt":
             cwd = os.getcwd()
             restart = os.path.join(cwd, "restart.bat")

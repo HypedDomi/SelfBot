@@ -14,14 +14,19 @@ class Plural:
     def __str__(self):
         v = self.value
         if v > 1 or v == 0:
-            return "%sn" % (self.name)
-        return "%s" % (self.name)
+            if self.name in ["Tag", "Nachricht"]:
+                return "%s %sen" % (self.value, self.name)
+            elif self.name in ["wurde"]:
+                return "%sn" % self.name
+            return "%s %sn" % (self.value, self.name)
+        if self.name in ["wurde"]:
+            return "%s" % self.name
+        return "%s %s" % (self.value, self.name)
 
 
 class TimeParser:
     def __init__(self, argument):
-        compiled = re.compile(
-            r"(?:(?P<hours>[0-9]{1,5})h)?(?:(?P<minutes>[0-9]{1,5})m)?(?:(?P<seconds>[0-9]{1,5})s)?$")
+        compiled = re.compile(r"(?:(?P<days>[0-9]{1,5})d)?(?:(?P<hours>[0-9]{1,5})h)?(?:(?P<minutes>[0-9]{1,5})m)?(?:(?P<seconds>[0-9]{1,5})s)?$")
         self.original = argument
         try:
             self.seconds = int(argument)
@@ -31,6 +36,9 @@ class TimeParser:
                 raise ValueError('Falsches Zeitformat') from e
 
             self.seconds = 0
+            days = match.group('days')
+            if days is not None:
+                self.seconds += int(days) * 86400
             hours = match.group('hours')
             if hours is not None:
                 self.seconds += int(hours) * 3600
@@ -58,19 +66,19 @@ class TimeParser:
 
         if days:
             if hours:
-                return '%s %s and %s %s' % (days, Plural(day=days), hours, Plural(hour=hours))
-            return f'{days} {Plural(day=days)}'
+                return '%s and %s' % (Plural(Tag=days), Plural(Stunde=hours))
+            return f'{Plural(Tag=days)}'
 
         if hours:
             if minutes:
-                return '%s %s and %s %s' % (hours, Plural(hour=hours), minutes, Plural(minute=minutes))
-            return f'{hours} {Plural(hour=hours)}'
+                return '%s and %s' % (Plural(Stunde=hours), Plural(Minute=minutes))
+            return f'{Plural(Stunde=hours)}'
 
         if minutes:
             if seconds:
-                return '%s %s and %s %s' % (minutes, Plural(minute=minutes), seconds, Plural(second=seconds))
-            return f'{minutes} {Plural(minute=minutes)}'
-        return f'{seconds} {Plural(second=seconds)}'
+                return '%s and %s' % (Plural(Minute=minutes), Plural(Sekunde=seconds))
+            return f'{Plural(Minute=minutes)}'
+        return f'{Plural(Sekunde=seconds)}'
 
 
 def td_format(td_object):

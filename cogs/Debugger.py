@@ -1,10 +1,6 @@
 import asyncio
-from dataclasses import replace
-import glob
 import io
-import math
 import platform
-import shutil
 import sys
 import textwrap
 import time
@@ -112,7 +108,7 @@ class Debugger(commands.Cog):
         hoursUp = int("{:.0f}".format(timeUp / 3600))
         minutesUp = int("{:.0f}".format((timeUp / 60) % 60))
         secondsUp = int("{:.0f}".format(timeUp % 60))
-        response += f"> Uptime: {hoursUp} {Plural(Stunde=hoursUp)}, {minutesUp} {Plural(Minute=minutesUp)}, {secondsUp} {Plural(Sekunde=secondsUp)}"
+        response += f"> Uptime: {Plural(Stunde=hoursUp)}, {Plural(Minute=minutesUp)}, {Plural(Sekunde=secondsUp)}"
         await ctx.send(response)
 
     @commands.command()
