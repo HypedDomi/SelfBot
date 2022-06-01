@@ -66,17 +66,17 @@ class TimeParser:
 
         if days:
             if hours:
-                return '%s and %s' % (Plural(Tag=days), Plural(Stunde=hours))
+                return '%s und %s' % (Plural(Tag=days), Plural(Stunde=hours))
             return f'{Plural(Tag=days)}'
 
         if hours:
             if minutes:
-                return '%s and %s' % (Plural(Stunde=hours), Plural(Minute=minutes))
+                return '%s und %s' % (Plural(Stunde=hours), Plural(Minute=minutes))
             return f'{Plural(Stunde=hours)}'
 
         if minutes:
             if seconds:
-                return '%s and %s' % (Plural(Minute=minutes), Plural(Sekunde=seconds))
+                return '%s und %s' % (Plural(Minute=minutes), Plural(Sekunde=seconds))
             return f'{Plural(Minute=minutes)}'
         return f'{Plural(Sekunde=seconds)}'
 

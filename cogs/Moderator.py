@@ -125,12 +125,16 @@ class Moderator(commands.Cog):
         timestamp = datetime.fromtimestamp(timestamp).isoformat()
         
         url = f"https://discord.com/api/v9/guilds/{ctx.guild.id}/members/{member.id}"
-        headers = { "Authorization": self.bot.http.token, "Content-Type": "application/json" }
+        headers = { "Authorization": self.bot.http.token, "Content-Type": "application/json", "x-audit-log-reason": reason }
         data = { "communication_disabled_until": timestamp }
         r = requests.patch(url, headers=headers, json=data)
         if r.status_code != 200:
             return await ctx.reply(f"> Es trat ein Fehler auf\n```json\n{r.json()}\n```", mention_author=False)
-        await ctx.reply(f"> {member.mention} wurde für {TimeParser.human_timedelta(datetime.utcnow() - timedelta(seconds=time.seconds))} gesperrt", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
+        response = f"> {member.mention} wurde gesperrt"
+        response += f"\n> Zeit: `{TimeParser.human_timedelta(datetime.utcnow() - timedelta(seconds=time.seconds))}`"
+        if reason:
+            response += f"\n> Grund: `{reason}`"
+        await ctx.reply(response, allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
 
 
 def setup(bot: commands.Bot):
