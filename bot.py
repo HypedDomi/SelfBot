@@ -10,7 +10,7 @@ TOKEN = os.getenv("TOKEN")
 PREFIX = os.getenv("PREFIX") or "."
 STATUS = os.getenv("STATUS") or "online"
 
-bot = commands.Bot(command_prefix=PREFIX, self_bot=True, help_command=None, status=discord.Status.offline, afk=True)
+bot = commands.Bot(command_prefix=PREFIX, self_bot=True, status=discord.Status.offline, afk=True)
 bot.startTime = time.time()
 bot.status = getattr(discord.Status, STATUS)
 bot.password = os.getenv("LINUX_PASSWORD") or ""

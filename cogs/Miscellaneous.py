@@ -176,6 +176,12 @@ class Miscellaneous(commands.Cog):
         except TypeError:
             await ctx.message.reply("> Ungültige Zeichen gefunden", mention_author=False)
         await ctx.message.reply(f"> {msg.replace('**', '^').replace('x', '*')} = {answer}", mention_author=False)
+    
+    @commands.command(aliases=["tiktok"])
+    async def tt(self, ctx, url):
+        if "tiktok.com" not in url:
+            return await ctx.message.reply("> Keine TikTok URL", mention_author=False)
+        await ctx.message.edit(content=f"https://tt-embed.com/?q={url}")
 
 
 def setup(bot: commands.Bot):

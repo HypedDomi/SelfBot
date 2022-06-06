@@ -82,6 +82,7 @@ class Administration(commands.Cog):
         if st is None:
             return await ctx.reply(f"> `{status}` existiert nicht", mention_author=False)
         await self.bot.change_presence(status=st, afk=True)
+        await ctx.reply(f"> Status wurde auf `{status}` gesetzt", mention_author=False)
 
 
 def setup(bot: commands.Bot):
