@@ -23,7 +23,7 @@ class Miscellaneous(commands.Cog):
         hoursUp = int("{:.0f}".format(timeUp / 3600))
         minutesUp = int("{:.0f}".format((timeUp / 60) % 60))
         secondsUp = int("{:.0f}".format(timeUp % 60))
-        await ctx.message.reply(f"> Uptime: {Plural(Stunde=hoursUp)}, {Plural(Minute=minutesUp)}, {Plural(Sekunde=secondsUp)}", mention_author=False)
+        await ctx.message.reply(f"> Uptime: {Plural(Hour=hoursUp)}, {Plural(Minute=minutesUp)}, {Plural(Second=secondsUp)}", mention_author=False)
 
     @commands.command()
     async def snipe(self, ctx, mode=None):
@@ -33,13 +33,13 @@ class Miscellaneous(commands.Cog):
                 message = self.bot.edited[channel.id]
             except KeyError:
                 if str(ctx.channel.type) == "text":  # Guild
-                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten in {channel.mention}", mention_author=False)
+                    return await ctx.message.reply(f"> There are no recently edited messages in {channel.mention}", mention_author=False)
                 elif str(ctx.channel.type) == "private":  # DM Channel
-                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten bei {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
+                    return await ctx.message.reply(f"> There are no recently edited messages by {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
                 elif str(ctx.channel.type) == "group":  # Group
-                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten in {channel.name or 'der Gruppe'}", mention_author=False)
+                    return await ctx.message.reply(f"> There are no recently edited messages in {channel.name or 'the group'}", mention_author=False)
                 else:
-                    return await ctx.message.reply("> Es gibt keine kürzlich editierten Nachrichten", mention_author=False)
+                    return await ctx.message.reply("> There are no recently edited messages.", mention_author=False)
             msg = f"**{message.author}**\n {message.content}"
             await ctx.message.reply(msg.replace("\n", "\n> "), allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
         else:
@@ -47,19 +47,19 @@ class Miscellaneous(commands.Cog):
                 message = self.bot.deleted[channel.id]
             except KeyError:
                 if str(ctx.channel.type) == "text":  # Guild
-                    return await ctx.message.reply(f"> Es gibt keine kürzlich gelöschten Nachrichten in {channel.mention}", mention_author=False)
+                    return await ctx.message.reply(f"> There are no recently deleted messages in {channel.mention}", mention_author=False)
                 elif str(ctx.channel.type) == "private":  # DM Channel
-                    return await ctx.message.reply(f"> Es gibt keine kürzlich gelöschten Nachrichten bei {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
+                    return await ctx.message.reply(f"> There are no recently deleted messages by {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
                 elif str(ctx.channel.type) == "group":  # Group
-                    return await ctx.message.reply(f"> Es gibt keine kürzlich gelöschten Nachrichten in {channel.name or 'der Gruppe'}", mention_author=False)
+                    return await ctx.message.reply(f"> There are no recently deleted messages in {channel.name or 'the group'}", mention_author=False)
                 else:
-                    return await ctx.message.reply("> Es gibt keine kürzlich gelöschten Nachrichten", mention_author=False)
+                    return await ctx.message.reply("> There are no recently deleted messages.", mention_author=False)
             msg = f"**{message.author}**\n {message.content}"
             await ctx.message.reply(msg.replace("\n", "\n> ") if message.content else msg, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False), files=[await x.to_file() for x in message.attachments])
 
     @commands.command()
     async def ping(self, ctx):
-        await ctx.message.reply(f"> Pong! {round(self.bot.latency * 1000, 2)}ms", mention_author=False)
+        await ctx.message.reply(f"> Ping: {round(self.bot.latency * 1000, 2)}ms", mention_author=False)
 
     @commands.command()
     async def sysinfo(self, ctx):
@@ -83,7 +83,7 @@ class Miscellaneous(commands.Cog):
         if game == "clear":
             self.bot.activity = None
             await self.bot.change_presence(status=self.bot.status, activity=None, afk=True)
-            await ctx.message.reply("> Aktivität entfernt", mention_author=False)
+            await ctx.message.reply("> Activity removed", mention_author=False)
 
         elif 'play' == game or 'stream' == game or 'watch' == game or 'listening' == game or 'competing' == game or 'custom' == game:
             if not title == None:
@@ -91,7 +91,7 @@ class Miscellaneous(commands.Cog):
                     self.bot.activity = discord.Activity(
                         type=discord.ActivityType.playing, name=title)
                     await self.bot.change_presence(status=self.bot.status, activity=discord.Activity(type=discord.ActivityType.playing, name=title), afk=True)
-                    await ctx.message.reply("> Playing Aktivität gesetzt", mention_author=False)
+                    await ctx.message.reply("> Set activity to Playing.", mention_author=False)
                 elif game == "stream":
                     profile = await (await self.bot.fetch_user(self.bot.user.id)).profile()
                     connections = profile.connected_accounts
@@ -101,22 +101,22 @@ class Miscellaneous(commands.Cog):
                             twitch = f"https://twitch.tv/{con['name']}"
                             break
                     if twitch == None:
-                        return await ctx.message.reply("> Du hast keinen Twitch Account mit Discord verknüpft", mention_author=False)
+                        return await ctx.message.reply("> You don't have a Twitch account linked to Discord", mention_author=False)
                     self.bot.activity = discord.Streaming(name=title, url=twitch)
                     await self.bot.change_presence(status=self.bot.status, activity=discord.Streaming(name=title, url=twitch), afk=True)
-                    await ctx.message.reply("> Streaming Aktivität gesetzt", mention_author=False)
+                    await ctx.message.reply("> Set activity to Streaming.", mention_author=False)
                 elif game == "watch":
                     self.bot.activity = discord.Activity(type=discord.ActivityType.watching, name=title)
                     await self.bot.change_presence(status=self.bot.status, activity=discord.Activity(type=discord.ActivityType.watching, name=title), afk=True)
-                    await ctx.message.reply("> Watching Aktivität gesetzt", mention_author=False)
+                    await ctx.message.reply("> Set activity to Watching.", mention_author=False)
                 elif game == "listening":
                     self.bot.activity = discord.Activity(type=discord.ActivityType.listening, name=title)
                     await self.bot.change_presence(status=self.bot.status, activity=discord.Activity(type=discord.ActivityType.listening, name=title), afk=True)
-                    await ctx.message.reply("> Listening Aktivität gesetzt", mention_author=False)
+                    await ctx.message.reply("> Set aactivity to Listening.", mention_author=False)
                 elif game == "competing":
                     self.bot.activity = discord.Activity(type=discord.ActivityType.competing, name=title)
                     await self.bot.change_presence(status=self.bot.status, activity=discord.Activity(type=discord.ActivityType.competing, name=title), afk=True)
-                    await ctx.message.reply("> Competing Aktivität gesetzt", mention_author=False)
+                    await ctx.message.reply("> Set activity to Competing.", mention_author=False)
                 elif game == "custom":
                     e = title.split()[0]
                     if not emoji.is_emoji(e):
@@ -130,26 +130,26 @@ class Miscellaneous(commands.Cog):
                     if title == "":
                         title = None
                     await self.bot.change_presence(status=self.bot.status, activity=discord.CustomActivity(title, emoji=emote), afk=True)
-                    await ctx.message.reply("> Custom Aktivität gesetzt", mention_author=False)
+                    await ctx.message.reply("> Set the activity to Custom.", mention_author=False)
         else:
-            await ctx.message.reply(f"> Aktivität `{game}` existiert nicht", mention_author=False)
+            await ctx.message.reply(f"> Activity `{game}` doesnt exist", mention_author=False)
     
     @commands.command()
     async def move(self, ctx, channel: str, amount: Union[int, str]):
         if not isinstance(amount, int):
-            return await ctx.reply(f"> `{amount}` ist keine Zahl", mention_author=False)
+            return await ctx.reply(f"> `{amount}` is not a number", mention_author=False)
         if amount < 0:
-            return await ctx.reply("> Du kannst keine Nachrichten moven die noch nicht gesendet wurden", mention_author=False)
+            return await ctx.reply("> You cannot move messages that have not been sent yet", mention_author=False)
         
         if channel.startswith("<#"):
             channel = channel[2:-1]
         channel = await self.bot.fetch_channel(int(channel))
         if channel == None:
-            return await ctx.message.reply(f"> Channel nicht gefunden", mention_author=False)
+            return await ctx.message.reply(f"> Channel not found", mention_author=False)
         try:
             web = await channel.create_webhook(name=self.bot.user)
         except discord.Forbidden:
-            return await ctx.reply(f"> Du kannst keine Webhooks in {channel.mention} erstellen")
+            return await ctx.reply(f"> You cannot create webhooks in {channel.mention}")
         messages = await ctx.channel.history(limit=amount+1).flatten()
         messages.pop(0)
         messages.reverse()
@@ -174,13 +174,14 @@ class Miscellaneous(commands.Cog):
             else:
                 answer = str(eval(equation, {"__builtins__": None}, {"sqrt": sqrt}))
         except TypeError:
-            await ctx.message.reply("> Ungültige Zeichen gefunden", mention_author=False)
+            await ctx.message.reply("> Invalid characters found", mention_author=False)
         await ctx.message.reply(f"> {msg.replace('**', '^').replace('x', '*')} = {answer}", mention_author=False)
-    
+        
+
     @commands.command(aliases=["tiktok"])
     async def tt(self, ctx, url):
         if "tiktok.com" not in url:
-            return await ctx.message.reply("> Keine TikTok URL", mention_author=False)
+            return await ctx.message.reply("> No TikTok URL", mention_author=False)
         await ctx.message.edit(content=f"https://tt-embed.com/?q={url}")
 
 

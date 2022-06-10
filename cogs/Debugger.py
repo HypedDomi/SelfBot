@@ -108,7 +108,7 @@ class Debugger(commands.Cog):
         hoursUp = int("{:.0f}".format(timeUp / 3600))
         minutesUp = int("{:.0f}".format((timeUp / 60) % 60))
         secondsUp = int("{:.0f}".format(timeUp % 60))
-        response += f"> Uptime: {Plural(Stunde=hoursUp)}, {Plural(Minute=minutesUp)}, {Plural(Sekunde=secondsUp)}"
+        response += f"> Uptime: {Plural(Hour=hoursUp)}, {Plural(Minute=minutesUp)}, {Plural(Second=secondsUp)}"
         await ctx.send(response)
 
     @commands.command()

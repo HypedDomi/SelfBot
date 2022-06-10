@@ -14,13 +14,7 @@ class Plural:
     def __str__(self):
         v = self.value
         if v > 1 or v == 0:
-            if self.name in ["Tag", "Nachricht"]:
-                return "%s %sen" % (self.value, self.name)
-            elif self.name in ["wurde"]:
-                return "%sn" % self.name
-            return "%s %sn" % (self.value, self.name)
-        if self.name in ["wurde"]:
-            return "%s" % self.name
+            return "%s %ss" % (self.value, self.name)
         return "%s %s" % (self.value, self.name)
 
 
@@ -33,7 +27,7 @@ class TimeParser:
         except ValueError as e:
             match = compiled.match(argument)
             if match is None or not match.group(0):
-                raise ValueError('Falsches Zeitformat') from e
+                raise ValueError('Wrong time format') from e
 
             self.seconds = 0
             days = match.group('days')
@@ -50,7 +44,7 @@ class TimeParser:
                 self.seconds += int(seconds)
 
         if self.seconds <= 0:
-            raise ValueError('Zeit muss größer als 0 sein')
+            raise ValueError('Time must be greater than 0')
 
     async def cog_command_error(self, ctx, error):
         print('Error in {0.command.qualified_name}: {1}'.format(ctx, error))
