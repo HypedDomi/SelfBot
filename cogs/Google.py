@@ -26,7 +26,7 @@ class Google(commands.Cog):
             message = f"**Google Translate**\nOriginal:\n{msg}\n{language}:\n{result.replace('&amp;', '&')}"
             await ctx.message.reply(message.replace('\n', '\n> '), mention_author=False)
         else:
-            await ctx.message.reply("> Sprache nicht gefunden", mention_author=False)
+            await ctx.message.reply("> Language not found", mention_author=False)
 
 
 def setup(bot: commands.Bot):
