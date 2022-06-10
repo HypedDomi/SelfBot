@@ -44,7 +44,7 @@ class Administration(commands.Cog):
             git = Github()
             repo = git.get_repo("HypedDomi/SelfBot")
             branch = repo.get_branch("english")
-            latest_commit = branch.get_commits()[0]
+            latest_commit = branch.commit
             if latest_commit.sha == self.bot.lastCommitSHA:
                 return await ctx.reply("> You are already on the latest version", mention_author=False)
             url = "https://github.com/HypedDomi/SelfBot/tree/english"
