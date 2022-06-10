@@ -19,10 +19,10 @@ class Administration(commands.Cog):
     async def restart(self, ctx, delay: Union[int, str] = None):
         delay = delay or 5
         if not isinstance(delay, int):
-            return await ctx.reply("> Delay muss eine Nummer sein", mention_author=False)
+            return await ctx.reply("> Delay must be a number", mention_author=False)
         if delay < 0:
-            return await ctx.reply("> Delay muss eine positive Nummer sein", mention_author=False)
-        await ctx.reply(f"> Bot startet in {Plural(Sekunde=delay)} neu", mention_author=False)
+            return await ctx.reply("> Delay must be a positive number", mention_author=False)
+        await ctx.reply(f"> The bot will restart in {Plural(Second=delay)}", mention_author=False)
         if os.name == "nt":
             cwd = os.getcwd()
             restart = os.path.join(cwd, "restart.bat")
@@ -42,11 +42,11 @@ class Administration(commands.Cog):
     async def update(self, ctx):
         try:
             git = Github()
-            repo = git.get_repo("HypedDomi/SelfBot")
+            repo = git.get_repo("RadNotRed/SelfBot")
             latest_commit = repo.get_commits()[0]
             if latest_commit.sha == self.bot.lastCommitSHA:
-                return await ctx.reply("> Du bist bereits auf der neuesten Version", mention_author=False)
-            url = f"https://github.com/HypedDomi/SelfBot"
+                return await ctx.reply("> You are already on the latest version", mention_author=False)
+            url = f"https://github.com/RadNotRed/SelfBot"
             if os.path.exists("temp"):
                 os.rmdir("temp")
             os.mkdir("temp")
@@ -63,14 +63,14 @@ class Administration(commands.Cog):
             else:
                 os.system("cp -rf temp/* .")
                 os.system("rm -rf temp")
-            await ctx.reply("> Bot wurde aktualisiert", mention_author=False)
+            await ctx.reply("> Bot has been updated", mention_author=False)
             await ctx.invoke(self.restart)
         except UnknownObjectException:
-            return await ctx.reply("> Du hast keinen Zugriff auf das Repository", mention_author=False)
+            return await ctx.reply("> You do not have access to the repository", mention_author=False)
         except GitCommandError:
-            return await ctx.reply("> Es ist ein Fehler beim Update aufgetreten", mention_author=False)
+            return await ctx.reply("> An error occurred during the update", mention_author=False)
         except FileNotFoundError:
-            return await ctx.reply("> Git ist nicht installiert", mention_author=False)
+            return await ctx.reply("> Git is not installed", mention_author=False)
 
     @commands.command()
     async def version(self, ctx):
@@ -80,9 +80,9 @@ class Administration(commands.Cog):
     async def status(self, ctx, status: str):
         st = getattr(discord.Status, status.lower())
         if st is None:
-            return await ctx.reply(f"> `{status}` existiert nicht", mention_author=False)
+            return await ctx.reply(f"> `{status}` does not exist", mention_author=False)
         await self.bot.change_presence(status=st, afk=True)
-        await ctx.reply(f"> Status wurde auf `{status}` gesetzt", mention_author=False)
+        await ctx.reply(f"> Status was set to `{status}`", mention_author=False)
 
 
 def setup(bot: commands.Bot):
