@@ -47,11 +47,13 @@ class Administration(commands.Cog):
             latest_commit = branch.commit
             if latest_commit.sha == self.bot.lastCommitSHA:
                 return await ctx.reply("> You are already on the latest version", mention_author=False)
-            url = "https://github.com/HypedDomi/SelfBot/tree/english"
+            url = "https://github.com/HypedDomi/SelfBot/"
             if os.path.exists("temp"):
                 os.rmdir("temp")
             os.mkdir("temp")
             Repo.clone_from(url, "temp")
+            os.chdir("temp")
+            os.system("git checkout english")
             self.bot.lastCommitSHA = latest_commit.sha
             with open("lastCommitSHA", "w") as f:
                 f.write(self.bot.lastCommitSHA)
