@@ -43,14 +43,17 @@ class Administration(commands.Cog):
         try:
             git = Github()
             repo = git.get_repo("HypedDomi/SelfBot")
-            latest_commit = repo.get_commits()[0]
+            branch = repo.get_branch("english")
+            latest_commit = branch.commit
             if latest_commit.sha == self.bot.lastCommitSHA:
                 return await ctx.reply("> You are already on the latest version", mention_author=False)
-            url = f"https://github.com/HypedDomi/SelfBot"
+            url = "https://github.com/HypedDomi/SelfBot/"
             if os.path.exists("temp"):
                 os.rmdir("temp")
             os.mkdir("temp")
             Repo.clone_from(url, "temp")
+            os.chdir("temp")
+            os.system("git checkout english")
             self.bot.lastCommitSHA = latest_commit.sha
             with open("lastCommitSHA", "w") as f:
                 f.write(self.bot.lastCommitSHA)
