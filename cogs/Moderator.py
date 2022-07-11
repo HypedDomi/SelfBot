@@ -91,7 +91,7 @@ class Moderator(commands.Cog):
         if seconds == 0:
             await ctx.reply("> Slow mode has been deactivated", mention_author=False)
         else:
-            await ctx.reply(f"> The slow mode is set to {Plural(Seconds=seconds)}", mention_author=False)
+            await ctx.reply(f"> The slow mode is set to {Plural(Second=seconds)}", mention_author=False)
     
     @commands.command()
     async def clear(self, ctx, amount: Union[int, str]):
