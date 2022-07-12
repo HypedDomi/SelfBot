@@ -105,7 +105,7 @@ class Moderator(commands.Cog):
             await ctx.channel.purge(limit=amount+1)
         except discord.Forbidden:
             return await ctx.reply("> No permission to delete messages", mention_author=False)
-        await ctx.send(f"> {Plural(Nachricht=amount)} {Plural(wurde=amount)} turned off", delete_after=10)
+        await ctx.send(f"> {Plural(Message=amount)} were deleted", delete_after=10)
     
     @commands.command()
     async def timeout(self, ctx, member: discord.Member, time: str, *, reason = ""):
