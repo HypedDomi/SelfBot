@@ -14,7 +14,7 @@ class Moderator(commands.Cog):
     async def kick(self, ctx, member: discord.Member, *, reason=""):
         if member == ctx.author:
             return await ctx.reply("> You can't kick yourself", mention_author=False)
-        if member.top_role.position >= ctx.author.top_role.position:
+        if member.top_role.position >= ctx.author.top_role.position and not ctx.guild.owner == ctx.author:
             return await ctx.reply("> You can't kick someone who has a higher role than you", mention_author=False)
         try:
             await member.kick(reason=reason)
@@ -31,7 +31,7 @@ class Moderator(commands.Cog):
     async def ban(self, ctx, member: discord.Member, *, reason=""):
         if member == ctx.author:
             return await ctx.reply("> You cannot ban yourself", mention_author=False)
-        if member.top_role.position >= ctx.author.top_role.position:
+        if member.top_role.position >= ctx.author.top_role.position and not ctx.guild.owner == ctx.author:
             return await ctx.reply("> You cannot ban someone who has a higher role than you", mention_author=False)
         try:
             await member.ban(reason=reason)
@@ -63,7 +63,7 @@ class Moderator(commands.Cog):
     async def softban(self, ctx, member: discord.Member, *, reason=""):
         if member == ctx.author:
             return await ctx.reply("> You cannot ban yourself", mention_author=False)
-        if member.top_role.position >= ctx.author.top_role.position:
+        if member.top_role.position >= ctx.author.top_role.position and not ctx.guild.owner == ctx.author:
             return await ctx.reply("> You cannot ban someone who has a higher role than you", mention_author=False)
         try:
             await member.ban(reason=reason)
@@ -116,7 +116,7 @@ class Moderator(commands.Cog):
 
         if member == ctx.author:
             return await ctx.reply("> You cannot timeout yourself", mention_author=False)
-        if member.top_role.position >= ctx.author.top_role.position:
+        if member.top_role.position >= ctx.author.top_role.position and not ctx.guild.owner == ctx.author:
             return await ctx.reply("> You cannot timeout someone who has a higher role than you", mention_author=False)
         if member.guild_permissions.administrator:
             return await ctx.reply("> You cannot timeout someone who has admin rights", mention_author=False)
