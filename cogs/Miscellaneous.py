@@ -33,7 +33,7 @@ class Miscellaneous(commands.Cog):
                 message = self.bot.edited[channel.id]
             except KeyError:
                 if str(ctx.channel.type) == "text":  # Guild
-                    return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten in {channel.mention}", mention_author=False)
+                    return await ctx.message.reply(f"> Es gibt keine kürzlich bearbeiteten Nachrichten in {channel.mention}", mention_author=False)
                 elif str(ctx.channel.type) == "private":  # DM Channel
                     return await ctx.message.reply(f"> Es gibt keine kürzlich editierten Nachrichten bei {channel.recipient.mention}", allowed_mentions=discord.AllowedMentions(users=False, replied_user=False))
                 elif str(ctx.channel.type) == "group":  # Group
